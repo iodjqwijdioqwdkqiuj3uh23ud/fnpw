@@ -1,35 +1,36 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const fs = require('fs');
+
+const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 소원 데이터를 저장할 파일
+// 소원 저장 파일 설정
 const DATA_FILE = './wishes.json';
 if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, '[]');
 
-// 메인 페이지 보여주기
+// ★ 이 부분이 중요해! index.html을 보여주도록 설정
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 모든 소원 가져오기 API
 app.get('/api/wishes', (req, res) => {
     const wishes = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
     res.json(wishes);
 });
 
-// 새 소원 저장하기 API
 app.post('/api/wishes', (req, res) => {
     const { content } = req.body;
-    if (!content) return res.status(400).send('내용이 없습니다.');
-
+    if (!content) return res.status(400).send('내용을 입력해주세요.');
     const wishes = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    wishes.unshift({ content, date: new Date().toLocaleString() }); // 최신글이 위로
+    wishes.unshift({ content, date: new Date().toLocaleString() });
     fs.writeFileSync(DATA_FILE, JSON.stringify(wishes, null, 2));
-    
-    res.redirect('/'); // 다시 메인으로
+    res.redirect('/');
 });
 
-app.listen(3000, () => console.log('소원 게시판 서버 가동 중: 3000포트'));
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+});
