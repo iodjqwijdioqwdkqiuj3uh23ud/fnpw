@@ -1,0 +1,13 @@
+{
+  "name": "fnpw-project",
+  "version": "1.0.0",
+  "description": "소원 게시판",
+  "main": "gemini-code-1778387009524.js",
+  "scripts": {
+    "start": "node gemini-code-1778387009524.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  }
+}
